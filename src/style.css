@@ -1,3 +1,29 @@
+/*
+ * MemeChronicle — Design System & Stylesheet
+ * https://memechronicle.com/
+ *
+ * Owner: Axiopistis Holdings LC
+ * Copyright © 2026 Axiopistis Holdings LC. All rights reserved.
+ *
+ * Brand color: #50C878 (Emerald Green)
+ * Brand font:  VT323 (wordmark only)
+ * Body font:   System sans-serif stack
+ *
+ * Sections:
+ *   1. Theme Variables (light & dark)
+ *   2. Font Loading
+ *   3. Base Styles
+ *   4. Layout
+ *   5. Header & Navigation
+ *   6. Main Content & Article Cards
+ *   7. Article Page
+ *   8. Prices Page
+ *   9. About & Legal Pages
+ *  10. Footer
+ *  11. Responsive Design
+ *  12. Loading States & Utilities
+ */
+
 /* ============================================
    MemeChronicle Design System
    Ultra-Minimal News Theme
