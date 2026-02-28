@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MemeChronicle API Test</title>
+    <style>
+        body {
+            font-family: monospace;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .test-result {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .success { background: #d4edda; border-color: #c3e6cb; }
+        .error { background: #f8d7da; border-color: #f5c6cb; }
+        .info { background: #d1ecf1; border-color: #bee5eb; }
+        pre {
+            background: #f4f4f4;
+            padding: 10px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <h1>MemeChronicle Hostinger Issue Diagnostic</h1>
+    <p>This page tests the exact API calls your site makes. Open browser console (F12) for detailed logs.</p>
+    
+    <div id="results"></div>
+
+    <script>
+        const SUPABASE_URL = 'https://fsluechcqsmqvvxmusww.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZzbHVlY2hjcXNtcXZ2eG11c3d3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjgwNTMxODIsImV4cCI6MjA4MzYyOTE4Mn0.MCHNvkDy3qTCGq7YjRk6EVd_ongXJ_gpRyCPuzc6k-U';
+
+        const resultsDiv = document.getElementById('results');
+
+        function addResult(title, message, type = 'info') {
+            const div = document.createElement('div');
+            div.className = `test-result ${type}`;
+            div.innerHTML = `<strong>${title}</strong><pre>${message}</pre>`;
+            resultsDiv.appendChild(div);
+        }
+
+        async function supabaseQuery(endpoint, params = {}) {
+            const queryString = new URLSearchParams(params).toString();
+            const url = `${SUPABASE_URL}/rest/v1/${endpoint}${queryString ? '?' + queryString : ''}`;
+            
+            console.log('Making request to:', url);
+            
+            const response = await fetch(url, {
+                headers: {
+                    'apikey': SUPABASE_ANON_KEY,
+                    'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+            
+            console.log('Response status:', response.status);
+            console.log('Response headers:', [...response.headers.entries()]);
+            
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(`API error ${response.status}: ${errorText}`);
+            }
+            
+            return response.json();
+        }
+
+        async function runTests() {
+            addResult('Starting Tests', 'Testing Supabase API connectivity...', 'info');
+
+            // Test 1: Basic connectivity
+            try {
+                addResult('Test 1: Basic API Call', 'Fetching article count...', 'info');
+                const countUrl = `${SUPABASE_URL}/rest/v1/published_articles?select=count`;
+                const countResponse = await fetch(countUrl, {
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                        'Prefer': 'count=exact'
+                    }
+                });
+                const countData = await countResponse.json();
+                addResult('✅ Test 1 Passed', `Article count: ${JSON.stringify(countData)}`, 'success');
+            } catch (error) {
+                addResult('❌ Test 1 Failed', error.message, 'error');
+                console.error('Test 1 error:', error);
+            }
+
+            // Test 2: Articles listing (same as frontend)
+            try {
+                addResult('Test 2: Fetch Articles List', 'Using same query as frontend...', 'info');
+                const params = {
+                    select: 'id,slug,rewritten_headline,rewritten_body,published_at,original_source_name',
+                    order: 'published_at.desc',
+                    limit: '3'
+                };
+                const articles = await supabaseQuery('published_articles', params);
+                addResult('✅ Test 2 Passed', `Fetched ${articles.length} articles:\n${JSON.stringify(articles, null, 2)}`, 'success');
+            } catch (error) {
+                addResult('❌ Test 2 Failed', error.message, 'error');
+                console.error('Test 2 error:', error);
+            }
+
+            // Test 3: Single article by slug
+            try {
+                addResult('Test 3: Fetch Single Article', 'Getting article by slug...', 'info');
+                const articles = await supabaseQuery('published_articles', {
+                    select: '*',
+                    slug: 'eq.cz-discusses-bnb-chain-meme-coin-growth-and-asters-privacy-advantages'
+                });
+                if (articles && articles.length > 0) {
+                    addResult('✅ Test 3 Passed', `Article found:\nHeadline: ${articles[0].rewritten_headline}\nBody length: ${articles[0].rewritten_body.length} chars`, 'success');
+                } else {
+                    addResult('⚠️ Test 3 Warning', 'No article found with that slug', 'info');
+                }
+            } catch (error) {
+                addResult('❌ Test 3 Failed', error.message, 'error');
+                console.error('Test 3 error:', error);
+            }
+
+            // Test 4: CORS check
+            addResult('Test 4: CORS Check', 'Check browser console for CORS errors. If you see "blocked by CORS policy", that\'s the issue.', 'info');
+
+            // Test 5: Browser environment check
+            const browserInfo = {
+                userAgent: navigator.userAgent,
+                origin: window.location.origin,
+                protocol: window.location.protocol
+            };
+            addResult('Test 5: Browser Info', JSON.stringify(browserInfo, null, 2), 'info');
+
+            addResult('Tests Complete', 'Check results above. If all passed but your site still shows blank pages, the issue is likely:\n1. Browser cache (hard refresh with Ctrl+Shift+R)\n2. Wrong file uploaded to Hostinger\n3. JavaScript errors (check console)', 'info');
+        }
+
+        // Run tests when page loads
+        runTests().catch(error => {
+            addResult('Fatal Error', error.message, 'error');
+            console.error('Fatal error:', error);
+        });
+    </script>
+</body>
+</html>

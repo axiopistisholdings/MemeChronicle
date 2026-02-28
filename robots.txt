@@ -1,0 +1,146 @@
+# MemeChronicle Robots.txt - Enterprise-Grade SEO Configuration
+# Updated: February 2026
+# Documentation: https://developers.google.com/search/docs/crawling-indexing/robots/intro
+
+# ============================================
+# GLOBAL RULES - All Search Engines
+# ============================================
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /admin/
+Disallow: /private/
+Disallow: /*.json$
+Disallow: /*?*sort=
+Disallow: /*?*filter=
+
+# Allow CSS and JS for proper rendering
+Allow: /*.css$
+Allow: /*.js$
+Allow: /*.svg$
+Allow: /*.png$
+Allow: /*.jpg$
+Allow: /*.webp$
+
+# ============================================
+# SITEMAP LOCATIONS
+# ============================================
+Sitemap: https://memechronicle.com/sitemap.xml
+
+# ============================================
+# MAJOR SEARCH ENGINES - Specific Rules
+# ============================================
+
+# Google
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 0
+
+# Google Images
+User-agent: Googlebot-Image
+Allow: /
+
+# Google News (Important for news sites)
+User-agent: Googlebot-News
+Allow: /
+
+# Bing
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 1
+
+# Yahoo
+User-agent: Slurp
+Allow: /
+
+# DuckDuckGo
+User-agent: DuckDuckBot
+Allow: /
+
+# Yandex (Russian search engine)
+User-agent: YandexBot
+Allow: /
+Crawl-delay: 2
+
+# Baidu (Chinese search engine)
+User-agent: Baiduspider
+Allow: /
+
+# ============================================
+# SOCIAL MEDIA CRAWLERS
+# ============================================
+
+# Facebook/Meta
+User-agent: facebookexternalhit
+Allow: /
+
+# Twitter/X
+User-agent: Twitterbot
+Allow: /
+
+# LinkedIn
+User-agent: LinkedInBot
+Allow: /
+
+# Pinterest
+User-agent: Pinterest
+Allow: /
+
+# Telegram
+User-agent: TelegramBot
+Allow: /
+
+# ============================================
+# AI/LLM CRAWLERS (Optional - Uncomment to allow)
+# ============================================
+
+# OpenAI GPT/ChatGPT
+# User-agent: GPTBot
+# Allow: /
+
+# Google Bard/Gemini
+# User-agent: Google-Extended
+# Allow: /
+
+# Anthropic Claude
+# User-agent: anthropic-ai
+# Allow: /
+
+# Common Crawl (Research/Archive)
+# User-agent: CCBot
+# Allow: /
+
+# ============================================
+# BAD BOTS - BLOCK (Uncomment if experiencing issues)
+# ============================================
+
+# SEO Audit Tools (can cause high server load)
+# User-agent: AhrefsBot
+# Disallow: /
+#
+# User-agent: SemrushBot
+# Disallow: /
+#
+# User-agent: MJ12bot
+# Disallow: /
+#
+# User-agent: DotBot
+# Disallow: /
+
+# Scrapers
+# User-agent: SiteBot
+# Disallow: /
+#
+# User-agent: ZoomBot
+# Disallow: /
+
+# ============================================
+# NOTES
+# ============================================
+# - Crawl-delay: 0 = no delay (fastest)
+# - Crawl-delay: 1-2 = polite (recommended for smaller sites)
+# - Crawl-delay: 5+ = conservative (if server load is a concern)
+# - Update sitemap URL whenever content structure changes
+# - Monitor crawl stats in Google Search Console
+
+
